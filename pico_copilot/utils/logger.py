@@ -1,9 +1,10 @@
 """Logger config module."""
 
+from pico_copilot.utils.pico_logger import getLogger
 
-from logging import DEBUG, INFO, getLogger, basicConfig
 
 LOG = getLogger(__name__)
 
-basicConfig(level=DEBUG,
-            format='%(levelname)s: %(module)s.py: %(funcName)s(): %(message)s')
+# TBD
+# basicConfig(level=DEBUG,
+            # format='%(levelname)s: %(module)s.py: %(funcName)s(): %(message)s')

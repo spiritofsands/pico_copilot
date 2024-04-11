@@ -6,46 +6,43 @@ List of individual led instructions,
 each instruction is a tuple of (seconds, brightness).
 """
 
-from copy import deepcopy
+from json import loads
 
-
-ANIMATIONS = {
-    'startup': [
-        # sec  bri
-        [(0.5, 1.0)],
-        [(0.5, 1.0), (0.0, 0.0)],
-        [(0.5, 0.0), (0.5, 1.0), (0.0, 0.0)],
-        [(1.0, 0.0), (0.5, 1.0)],
-    ],
-    'heartbeat': [
-        [(0.1, 1.0), (0.9, 0.0)],
-    ],
-    'slow_heartbeat': [
-        [(0.1, 1.0), (2.9, 0.0)],
-    ],
-}
+import pico_copilot
+from pico_copilot.utils.logger import LOG
 
 
 class Animation:
     def __init__(self, animation_name, tick_length):
         self.finished = False
         self._animation_name = animation_name
-        self._animation = deepcopy(ANIMATIONS[animation_name])
-        self._length = self._get_animation_length()
-        self._led_count = len(self._animation)
+        self._animation = None
+        self._length = 0
+        self._led_count = 0
         self._tick = tick_length
 
+        self._load_animation()
+        self._led_count = len(self._animation)
+        self._calculate_animation_length()
         self.reset()
 
-    def _get_animation_length(self):
+    def _load_animation(self):
+        copilot_dir = pico_copilot.__file__
+        copilot_dir = '/'.join(list(copilot_dir.split('/')[0:-1]))
+        resource = '/'.join([copilot_dir, 'resources',
+                            'led_animations.json'])
+        animations = loads(open(resource).read())
+        self._animation = animations[self._animation_name]
+
+    def _calculate_animation_length(self):
         list_of_lengths = [len(sublist) for sublist in self._animation]
-        return max(list_of_lengths)
+        self._length = max(list_of_lengths)
 
     def _advance_time(self):
         self._time += self._tick
 
     def reset(self):
-        self._animation = deepcopy(ANIMATIONS[self._animation_name])
+        self._load_animation()
         self._indexes = [0] * self._led_count
         self._frame = [led[0] for led in self._animation]
         self._time = 0

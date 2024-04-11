@@ -1,7 +1,5 @@
 """Power module."""
 
-from typing import List
-
 
 class PowerModule:
     """Module to control battery power."""
@@ -34,7 +32,7 @@ class PowerModule:
         # TODO: critical low signal
         return self._battery_voltage <= self.LOW_VOLTAGE
 
-    def status(self) -> List[str]:
+    def status(self):
         """List of strings with module status."""
 
         def _voltage_text() -> str:

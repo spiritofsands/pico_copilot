@@ -1,9 +1,6 @@
 """Led module."""
 
-from typing import List
-
 from pico_copilot.modules.led_animations import (
-    ANIMATIONS,
     Animation,
 )
 from pico_copilot.utils.logger import LOG
@@ -62,10 +59,6 @@ class LedManager:
 
     def set_animation(self, animation_name, animation_mode):
         """Play leds animation."""
-        if animation_name not in ANIMATIONS:
-            LOG.error(f'{animation_name} not in {ANIMATIONS.keys()}')
-            return
-
         self.updates_available = True
         self._current_animation = animation_name
         self._animation_mode = animation_mode

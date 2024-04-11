@@ -1,7 +1,5 @@
 """Led module."""
 
-from enum import Enum
-
 from pico_copilot.utils.logger import LOG
 
 class ButtonModule:

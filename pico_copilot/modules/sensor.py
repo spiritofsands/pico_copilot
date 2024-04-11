@@ -1,9 +1,5 @@
 """Sensor module."""
 
-from typing import List
-
-from pico_copilot.utils.logger import LOG
-
 
 class SensorManager:
     """Module to control light sensor."""

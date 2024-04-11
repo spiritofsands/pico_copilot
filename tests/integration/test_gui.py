@@ -10,8 +10,9 @@ from copy import deepcopy
 PACKAGE_DIR = dirname(dirname(dirname(abspath(__file__))))
 sys.path.insert(0, PACKAGE_DIR)
 
-from emulator import Emulator, BoardInterface
+from emulator import Emulator
 from pico_copilot.modules.control import ControlModule
+from pico_copilot.modules.board_interface import BoardInterface
 
 BOARD_CONFIG = {
     'leds':
