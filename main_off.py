@@ -4,6 +4,8 @@
 from pico_copilot.modules.control import ControlModule
 from pico_copilot.modules.board_interface import BoardInterface
 from pico_copilot.board.board import Board
+from pico_copilot.board.config import BOARD_CONFIG
+from pico_copilot.board.state import STATE
 from pico_copilot.utils.logger import LOG
 
 
@@ -11,11 +13,11 @@ def main():
     """Copilot entrance point."""
     LOG.info('Starting the copilot')
 
-    board_config = None
+    board_config = BOARD_CONFIG
     board = Board(board_config)
     board_interface = BoardInterface(board, board_config)
 
-    state = None
+    state = STATE
     control_module = ControlModule(board_interface, state)
     control_module.start()
 

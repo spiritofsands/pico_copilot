@@ -88,6 +88,7 @@ class Emulator:
     def set_led_brightness(self, name, brightness):
         """Set led brightness based on its name."""
         known_name = False
+        # FIXME: simplify
         for led_group in ('tail', 'front', 'status'):
             if name in self._colors[led_group]['leds']:
                 known_name = True
@@ -98,7 +99,7 @@ class Emulator:
                 # LOG.debug(f'{led_group} {name} was set to {brightness}')
                 self._colors[led_group]['status'] = True
         if not known_name:
-            LOG.warning('Unknown color name')
+            LOG.warning('Unknown led name')
 
     def get_light_sensor(self):
         return float(self._light_scale_value.get())
