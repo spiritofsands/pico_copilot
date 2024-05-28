@@ -28,6 +28,10 @@ class Board:
 
         self._light_sensor = LightSensor(self._config)
 
+        self._button1 = Pin(config['buttons']['button1']['pin'],
+                            Pin.IN,
+                            Pin.PULL_UP)
+
         # TBD: add
         # self.onboard_led = Pin("LED", Pin.OUT)
 
@@ -50,11 +54,14 @@ class Board:
         # linear here
         sensor_data = min(max_lux, sensor_data)
         value = sensor_data / max_lux
-        LOG.debug(f'Calculated brightness value: {value} (from {sensor_data})')
+        LOG.debug(f'HW Calculated brightness value: {value} (from {sensor_data})')
         return value
 
     def get_button_state(self):
-        return False
+        pressed = self._button1.value() == 0
+        if pressed:
+            LOG.debug('HW Button was pressed')
+        return pressed
 
     def _get_duty(self, brightness):
         """Get duty value from 0.0-1.0 brightness range."""

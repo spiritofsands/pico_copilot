@@ -36,4 +36,11 @@ BOARD_CONFIG = {
             'device_address': 0x23,
         },
     },
+    'buttons':
+    {
+        'button1':
+        {
+            'pin': 22,
+        },
+    },
 }
