@@ -1,9 +1,9 @@
 """Board."""
 
 from pico_copilot.utils.logger import LOG
+from pico_copilot.board.light_sensor import LightSensor
 
 from machine import Pin, PWM
-from random import random
 
 
 class Board:
@@ -26,29 +26,31 @@ class Board:
                         Pin(led_config['pin'], Pin.OUT))
                     self._leds[led_group][led_name].freq(self.DEFAULT_PWM_FREQ)
 
+        self._light_sensor = LightSensor(self._config)
+
         # TBD: add
         # self.onboard_led = Pin("LED", Pin.OUT)
 
     def set_led_brightness(self, name, brightness):
-        LOG.debug(f'HW set led brightness of {name} to {brightness}')
+        if name == 'status':
+            LOG.debug(f'HW set led brightness of {name} to {brightness}')
 
         for led_group_data in self._leds.values():
             if name in led_group_data:
                 known_name = True
-                if name == 'status':
-                    if brightness > 0.5:
-                        led_group_data[name].on()
-                    else:
-                        led_group_data[name].off()
-                else:
-                    led_group_data[name].duty_u16(
-                        self._get_duty(brightness))
+                led_group_data[name].duty_u16(
+                    self._get_duty(brightness))
         if not known_name:
             LOG.warning('Unknown led name')
 
     def get_light_sensor(self):
-        value = random()
-        # LOG.debug(f'HW get light sensor: {value}')
+        """Return brightness from 0.0 to 1.0."""
+        sensor_data = self._light_sensor.get_data()
+        max_lux = 10000
+        # linear here
+        sensor_data = min(max_lux, sensor_data)
+        value = sensor_data / max_lux
+        LOG.debug(f'Calculated brightness value: {value} (from {sensor_data})')
         return value
 
     def get_button_state(self):

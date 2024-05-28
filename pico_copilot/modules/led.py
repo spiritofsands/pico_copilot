@@ -44,13 +44,17 @@ class LedManager:
     def _set_led_brightness(self, leds):
         """Update leds params."""
         for name, params in leds.items():
-            # LOG.debug(f'Changing {name} led brightness')
+            # LOG.debug(f'Changing {name} led brightness to {params}')
             brightness = self._adjust_brightness(params['brightness'])
-            # set the physical brightness
-            self._board.change_brightness(name, brightness)
-            # update the state to reflect the physical brightness
-            self._state.set_led_brightness(self._name,
-                                           name, brightness)
+            current_brightness = self._state.get_leds_brightness(
+                self._name)[name]['brightness']
+
+            if current_brightness != brightness:
+                # set the physical brightness
+                self._board.change_brightness(name, brightness)
+                # update the state to reflect the physical brightness
+                self._state.set_led_brightness(self._name,
+                                               name, brightness)
 
     def _adjust_brightness(self, brightness):
         """Adjust brightness taking the max brightness into account."""

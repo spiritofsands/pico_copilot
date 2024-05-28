@@ -62,7 +62,8 @@ class ControlModule:
         self._modules['sensors'] = SensorManager(
                 self._board,
                 self._state,
-                name)
+                name,
+                self._tick)
 
     def _create_buttons_module(self, name):
         self._modules['button'] = ButtonModule(
@@ -97,8 +98,12 @@ class ControlModule:
         if auto:
             brightness = self._state.get_sensor('light')
 
-        for module in ['tail_leds', 'front_leds', 'status_leds']:
+        for module in ['tail_leds', 'front_leds']:
             self._modules[module].set_brightness_cap(brightness)
+
+        status_led_brightness_cap = max(brightness, 0.5)
+        self._modules['status_leds'].set_brightness_cap(
+            status_led_brightness_cap)
 
         for module in self._modules.values():
             if module.updates_available:

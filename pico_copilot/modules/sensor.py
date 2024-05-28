@@ -1,18 +1,24 @@
 """Sensor module."""
 
+from pico_copilot.utils.logger import LOG
+
 
 class SensorManager:
     """Module to control light sensor."""
 
-    def __init__(self, board, state, name):
+    def __init__(self, board, state, name, tick_length):
         """Light sensor initialization."""
 
         self._board = board
         self._state = state
         self._name = name
+        self._tick = tick_length
+        self._update_interval = self._state.get_sensor_update_interval('light')
         # TBD: hardcoded
         self.updates_available = True
         self._ninja_mode = False
+
+        self._reset_time()
 
     def _get_light_sensor(self):
         """Get light sensor value."""
@@ -20,10 +26,20 @@ class SensorManager:
         return value
 
     def update(self):
-        self._state.set_sensor(self._name, self._get_light_sensor())
+        if self._time >= self._update_interval:
+            self._state.set_sensor(self._name, self._get_light_sensor())
+            self._reset_time()
 
-    def set_ninja_mode(self, state):
-        self._ninja_mode = state
+        self._advance_time()
+
+    def set_ninja_mode(self, status):
+        self._ninja_mode = status
 
         # Disable sensor on ninja mode
         self.updates_available = not self._ninja_mode
+
+    def _advance_time(self):
+        self._time += self._tick
+
+    def _reset_time(self):
+        self._time = 0

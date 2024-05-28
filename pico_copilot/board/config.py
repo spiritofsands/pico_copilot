@@ -23,12 +23,17 @@ BOARD_CONFIG = {
         'status': {
             'leds': {
                 'status': {
-                    'pin': 'LED'},
+                    'pin': 18},
             }
         }
     },
     'sensors':
     {
-        'light': {'pin': 10},
+        'light': {
+            'sda': 26,
+            'scl': 27,
+            'i2c': 1,
+            'device_address': 0x23,
+        },
     },
 }

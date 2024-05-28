@@ -18,6 +18,7 @@ def main():
     board_interface = BoardInterface(board, board_config)
 
     state = STATE
+    # LOG.debug(f'INIT STATE: {state}')
     control_module = ControlModule(board_interface, state)
     control_module.start()
 

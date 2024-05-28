@@ -91,6 +91,7 @@ def generate_default_state():
             'light':
             {
                 'value': default_brightness,
+                'update_interval': 1,  # 1 sec
             },
         },
         'buttons':

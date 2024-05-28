@@ -44,6 +44,7 @@ STATE = {
         'light':
         {
             'value': _DEFAULT_BRIGHTNESS,
+            'update_interval': 1,  # 1 sec
         },
     },
     'buttons':
