@@ -19,7 +19,13 @@ class PicoLogger:
     def info(self, text):
         print(f'INFO: {text}')
         with open(self.FILENAME, 'a', encoding='utf-8') as file:
-            file.write(f'DEBUG: {text}\n')
+            file.write(f'INFO: {text}\n')
+
+    def warning(self, text):
+        print(f'WARNING: {text}')
+        with open(self.FILENAME, 'a', encoding='utf-8') as file:
+            file.write(f'WARNING: {text}\n')
+
 
 
 

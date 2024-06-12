@@ -7,26 +7,26 @@ STATE = {
     {
         'tail': {
             'state': {
-                'animation_playing': None,
-                'animation_mode': 'once',
+                'animation_playing': 'startup',
+                'animation_mode': 'repeat',
             },
             'leds': {
                 'tail_bars': {'brightness': _DEFAULT_BRIGHTNESS},
-                'top_v': {'brightness': 0},
-                'mid_v': {'brightness': 0},
-                'low_x': {'brightness': 0},
+                'top_v': {'brightness': _DEFAULT_BRIGHTNESS},
+                'mid_v': {'brightness': _DEFAULT_BRIGHTNESS},
+                'low_x': {'brightness': _DEFAULT_BRIGHTNESS},
             }
         },
         'front': {
             'state': {
-                'animation_playing': None,
-                'animation_mode': 'once',
+                'animation_playing': 'startup',
+                'animation_mode': 'repeat',
             },
             'leds': {
                 'front_bars': {'brightness': _DEFAULT_BRIGHTNESS},
-                'segment_edge': {'brightness': 0},
-                'segment_mid': {'brightness': 0},
-                'segment_center': {'brightness': 0},
+                'segment_edge': {'brightness': _DEFAULT_BRIGHTNESS},
+                'segment_mid': {'brightness': _DEFAULT_BRIGHTNESS},
+                'segment_center': {'brightness': _DEFAULT_BRIGHTNESS},
             }
         },
         'status': {

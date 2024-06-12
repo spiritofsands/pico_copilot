@@ -22,6 +22,8 @@ class Board:
                     self._leds[led_group][led_name] = Pin(
                         led_config['pin'], Pin.OUT)
                 else:
+                    # LOG.debug(f'Setting led {led_group} {led_name}')
+                    # LOG.debug(f"led_config {led_config}")
                     self._leds[led_group][led_name] = PWM(
                         Pin(led_config['pin'], Pin.OUT))
                     self._leds[led_group][led_name].freq(self.DEFAULT_PWM_FREQ)
@@ -36,12 +38,14 @@ class Board:
         # self.onboard_led = Pin("LED", Pin.OUT)
 
     def set_led_brightness(self, name, brightness):
-        if name == 'status':
-            LOG.debug(f'HW set led brightness of {name} to {brightness}')
+        LOG.debug(f'HW set led brightness of {name} to {brightness}')
 
-        for led_group_data in self._leds.values():
+        known_name = False
+        for led_group_name, led_group_data in self._leds.items():
             if name in led_group_data:
                 known_name = True
+                # LOG.debug(f'turning "{name}" on: ')
+                # LOG.debug(f'{led_group_data}')
                 led_group_data[name].duty_u16(
                     self._get_duty(brightness))
         if not known_name:
@@ -54,7 +58,8 @@ class Board:
         # linear here
         sensor_data = min(max_lux, sensor_data)
         value = sensor_data / max_lux
-        LOG.debug(f'HW Calculated brightness value: {value} (from {sensor_data})')
+        # LOG.debug(f'HW Calculated brightness value: {value} '
+        #            f'(from {sensor_data})')
         return value
 
     def get_button_state(self):
