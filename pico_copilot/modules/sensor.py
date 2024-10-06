@@ -1,5 +1,7 @@
 """Sensor module."""
 
+import asyncio
+
 from pico_copilot.utils.logger import LOG
 
 
@@ -25,7 +27,7 @@ class SensorManager:
         value = self._board.get_light_sensor()
         return value
 
-    def update(self):
+    async def update(self):
         if self._time >= self._update_interval:
             self._state.set_sensor(self._name, self._get_light_sensor())
             self._reset_time()

@@ -1,5 +1,7 @@
 """Led module."""
 
+import asyncio
+
 from pico_copilot.modules.led_animations import (
     Animation,
 )
@@ -37,8 +39,12 @@ class LedManager:
 
     def set_all_leds_brightness(self, value):
         """Set all leds to max brightness."""
-        leds = {led_name: {'brightness': value}
-                for led_name in self._led_names}
+        leds = {
+            led_name: {
+                'brightness': value
+            }
+            for led_name in self._led_names
+        }
         self._set_led_brightness(leds)
 
     def _set_led_brightness(self, leds):
@@ -53,8 +59,7 @@ class LedManager:
                 # set the physical brightness
                 self._board.change_brightness(name, brightness)
                 # update the state to reflect the physical brightness
-                self._state.set_led_brightness(self._name,
-                                               name, brightness)
+                self._state.set_led_brightness(self._name, name, brightness)
 
     def _adjust_brightness(self, brightness):
         """Adjust brightness taking the max brightness into account."""
@@ -68,15 +73,23 @@ class LedManager:
         self._animation_mode = animation_mode
         self._animation = Animation(self._current_animation, self._tick)
 
-    def update(self):
+    async def update(self):
+        if not self.updates_available:
+            return
+
         if self._animation or (self._ninja_mode and self._name == 'status'):
             if not self._animation.finished:
                 frame = self._animation.generate_frame()
                 # LOG.debug(f'Got frame {frame}')
 
-                leds = {led_name: {'brightness': led_brightness}
-                        for led_name, led_brightness in zip(
-                            self._led_names, frame)}
+                leds = {
+                    led_name: {
+                        'brightness': led_brightness
+                    }
+                    for led_name,
+                    led_brightness in zip(self._led_names,
+                                          frame)
+                }
                 self._set_led_brightness(leds)
             else:
                 if self._animation_mode == 'repeat':

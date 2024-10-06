@@ -1,6 +1,9 @@
 """Led module."""
 
+import asyncio
+
 from pico_copilot.utils.logger import LOG
+
 
 class ButtonModule:
     """Button Module."""
@@ -34,7 +37,7 @@ class ButtonModule:
         # Always hardcoded
         self.updates_available = True
 
-    def update(self):
+    async def update(self):
         button_pressed = self._board.get_button_state()
         self._check_button(button_pressed)
 

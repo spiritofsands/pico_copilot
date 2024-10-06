@@ -1,6 +1,6 @@
 """Main entrance point."""
 
-
+import asyncio
 import sys
 from os.path import abspath, dirname
 from threading import Thread
@@ -15,40 +15,57 @@ from pico_copilot.modules.control import ControlModule
 from pico_copilot.modules.board_interface import BoardInterface
 
 BOARD_CONFIG = {
-    'leds':
-    {
+    'leds': {
         'tail': {
             'leds': {
-                'tail_bars': {'pin': 1},
-                'top_v': {'pin': 2},
-                'mid_v': {'pin': 3},
-                'low_x': {'pin': 4},
+                'tail_bars': {
+                    'pin': 1
+                },
+                'top_v': {
+                    'pin': 2
+                },
+                'mid_v': {
+                    'pin': 3
+                },
+                'low_x': {
+                    'pin': 4
+                },
             }
         },
         'front': {
             'leds': {
-                'front_bars': {'pin': 5},
-                'segment_edge': {'pin': 6},
-                'segment_mid': {'pin': 7},
-                'segment_center': {'pin': 8},
+                'front_bars': {
+                    'pin': 5
+                },
+                'segment_edge': {
+                    'pin': 6
+                },
+                'segment_mid': {
+                    'pin': 7
+                },
+                'segment_center': {
+                    'pin': 8
+                },
             }
         },
         'status': {
             'leds': {
                 'status': {
-                    'pin': 9},
+                    'pin': 9
+                },
             }
         }
     },
-    'sensors':
-    {
-        'light': {'pin': 10},
+    'sensors': {
+        'light': {
+            'pin': 10
+        },
     },
 }
 
 
 def generate_default_state():
-    default_brightness = 0.5
+    # Virtual initial state
     return {
         'leds':
         {
@@ -58,7 +75,7 @@ def generate_default_state():
                     'animation_mode': 'once',
                 },
                 'leds': {
-                    'tail_bars': {'brightness': default_brightness},
+                    'tail_bars': {'brightness': 0},
                     'top_v': {'brightness': 0},
                     'mid_v': {'brightness': 0},
                     'low_x': {'brightness': 0},
@@ -70,7 +87,7 @@ def generate_default_state():
                     'animation_mode': 'once',
                 },
                 'leds': {
-                    'front_bars': {'brightness': default_brightness},
+                    'front_bars': {'brightness': 0},
                     'segment_edge': {'brightness': 0},
                     'segment_mid': {'brightness': 0},
                     'segment_center': {'brightness': 0},
@@ -82,7 +99,7 @@ def generate_default_state():
                     'animation_mode': 'once',
                 },
                 'leds': {
-                    'status': {'brightness': default_brightness},
+                    'status': {'brightness': 0},
                 }
             }
         },
@@ -90,7 +107,7 @@ def generate_default_state():
         {
             'light':
             {
-                'value': default_brightness,
+                'value': 0,
                 'update_interval': 1,  # 1 sec
             },
         },
@@ -138,7 +155,7 @@ CONTROL_MODULE = ControlModule(BOARD, STATE)
 
 def start_control_module():
     """Run the control module main loop."""
-    CONTROL_MODULE.start()
+    asyncio.run(CONTROL_MODULE.start())
 
 
 def update_control_module_state():

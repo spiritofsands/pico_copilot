@@ -1,6 +1,6 @@
 """Control module."""
 
-from time import sleep
+import asyncio
 
 from pico_copilot.modules.led import LedManager
 from pico_copilot.modules.sensor import SensorManager
@@ -16,15 +16,19 @@ class ControlModule:
 
     def __init__(self, board, state):
         """All modules initialization."""
-        self._tick = 0.05
+        self._tick = 0.01
         self._board = board
         self._state = State(state)
         self._brightness_map_index = 0
         self._brightness_map = [
             # bri auto_brightness
-            (0.3, True),
-            (0.3, False),
-            (0.6, False)]
+            (0.3,
+             True),
+            (0.3,
+             False),
+            (0.6,
+             False)
+        ]
         self._ninja_mode = False
         self._ninja_mode_enabled = False
 
@@ -43,47 +47,56 @@ class ControlModule:
 
         self._set_animations()
 
-    def start(self):
+    async def start(self):
         """Start the control module routine."""
         LOG.info('Control module started')
 
+        tasks = set()
         while True:
-            self._update_modules()
-            sleep(self._tick)
+            self._update_ninja_mode()
+            self._update_brightness_cap()
+
+            tasks.clear()
+            for module in self._modules.values():
+                # FIXME: private _name
+                task = asyncio.create_task(module.update(), name=module._name)
+                tasks.add(task)
+                task.add_done_callback(tasks.discard)
+
+            await asyncio.sleep(self._tick)
+
+            self._handle_button_events()
 
     def _create_led_module(self, name):
-        self._modules[f'{name}_leds'] = LedManager(
-                self._board,
-                self._state,
-                name,
-                self._tick)
+        self._modules[f'{name}_leds'] = LedManager(self._board,
+                                                   self._state,
+                                                   name,
+                                                   self._tick)
 
     def _create_sensors_module(self, name):
-        self._modules['sensors'] = SensorManager(
-                self._board,
-                self._state,
-                name,
-                self._tick)
+        self._modules['sensors'] = SensorManager(self._board,
+                                                 self._state,
+                                                 name,
+                                                 self._tick)
 
     def _create_buttons_module(self, name):
-        self._modules['button'] = ButtonModule(
-                self._board,
-                self._state,
-                name,
-                self._tick)
+        self._modules['button'] = ButtonModule(self._board,
+                                               self._state,
+                                               name,
+                                               self._tick)
 
     def _set_animations(self):
         """Set initial animations."""
         for group in ('tail', 'front', 'status'):
             if self._state.get_leds_state(group)['animation_playing']:
-                animation = self._state.get_leds_state(group)[
-                    'animation_playing']
+                animation = self._state.get_leds_state(
+                    group)['animation_playing']
                 mode = self._state.get_leds_state(group)['animation_mode']
 
                 LOG.info(f'Playing "{animation}" on {group}_leds ({mode})')
                 self._modules[f'{group}_leds'].set_animation(animation, mode)
 
-    def _update_modules(self):
+    def _update_ninja_mode(self):
         if self._ninja_mode:
             if not self._ninja_mode_enabled:
                 self._ninja_mode_to_modules(True)
@@ -93,8 +106,8 @@ class ControlModule:
                 self._ninja_mode_to_modules(False)
                 self._ninja_mode_enabled = False
 
-        brightness, auto = self._brightness_map[
-            self._brightness_map_index]
+    def _update_brightness_cap(self):
+        brightness, auto = self._brightness_map[self._brightness_map_index]
         if auto:
             brightness = self._state.get_sensor('light')
 
@@ -105,14 +118,8 @@ class ControlModule:
         self._modules['status_leds'].set_brightness_cap(
             status_led_brightness_cap)
 
-        for module in self._modules.values():
-            if module.updates_available:
-                module.update()
-
-        self._handle_button_events()
-
     def update_config(self, state):
-        """Used to externally change the state."""
+        """Externally change the state."""
         LOG.info('State was overwritten.')
         self._state.update(state)
         self._set_animations()

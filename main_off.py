@@ -1,5 +1,6 @@
 """Main entrance point."""
 
+import asyncio
 
 from pico_copilot.modules.control import ControlModule
 from pico_copilot.modules.board_interface import BoardInterface
@@ -20,7 +21,7 @@ def main():
     state = STATE
     # LOG.debug(f'INIT STATE: {state}')
     control_module = ControlModule(board_interface, state)
-    control_module.start()
+    asyncio.run(control_module.start())
 
 
 if __name__ == '__main__':
