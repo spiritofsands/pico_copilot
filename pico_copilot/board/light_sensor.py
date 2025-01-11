@@ -1,6 +1,6 @@
 """Light Sensor module."""
 
-# from pico_copilot.utils.logger import LOG
+from pico_copilot.utils.logger import LOG
 
 from machine import I2C, Pin
 
@@ -16,8 +16,8 @@ class LightSensor:
                   sda=Pin(config['sensors']['light']['sda']),
                   scl=Pin(config['sensors']['light']['scl']))
 
-        self._bh1750 = BH1750(
-            config['sensors']['light']['device_address'], i2c)
+        self._bh1750 = BH1750(config['sensors']['light']['device_address'],
+                              i2c)
 
     def get_data(self):
         """Return real sensor measurements."""

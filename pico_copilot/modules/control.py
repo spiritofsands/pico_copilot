@@ -59,9 +59,11 @@ class ControlModule:
             tasks.clear()
             for module in self._modules.values():
                 # FIXME: private _name
-                task = asyncio.create_task(module.update(), name=module._name)
+                task = asyncio.create_task(
+                    module.update())  # no name in mp, name=module._name)
                 tasks.add(task)
-                task.add_done_callback(tasks.discard)
+                # FIXME
+                # task.add_done_callback(tasks.discard)
 
             await asyncio.sleep(self._tick)
 
