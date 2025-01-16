@@ -22,11 +22,11 @@ class ControlModule:
         self._brightness_map_index = 0
         self._brightness_map = [
             # bri auto_brightness
-            (0.3,
+            (0.5,
              True),
-            (0.3,
+            (0.5,
              False),
-            (0.6,
+            (1.0,
              False)
         ]
         self._ninja_mode = False
@@ -51,23 +51,20 @@ class ControlModule:
         """Start the control module routine."""
         LOG.info('Control module started')
 
-        tasks = set()
+        tasks = [None] * len(self._modules.values())
         while True:
             self._update_ninja_mode()
             self._update_brightness_cap()
 
-            tasks.clear()
-            for module in self._modules.values():
-                # FIXME: private _name
-                task = asyncio.create_task(
-                    module.update())  # no name in mp, name=module._name)
-                tasks.add(task)
-                # FIXME
-                # task.add_done_callback(tasks.discard)
+            # Defer module updates
+            for index, module in enumerate(self._modules.values()):
+                tasks[index] = asyncio.create_task(module.update())
 
             await asyncio.sleep(self._tick)
 
             self._handle_button_events()
+
+            await asyncio.gather(*tasks)
 
     def _create_led_module(self, name):
         self._modules[f'{name}_leds'] = LedManager(self._board,

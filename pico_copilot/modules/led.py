@@ -2,7 +2,7 @@
 
 import asyncio
 
-from pico_copilot.modules.led_animations import (
+from pico_copilot.modules.animations.animation import (
     Animation,
 )
 from pico_copilot.utils.logger import LOG
@@ -33,8 +33,11 @@ class LedManager:
         self._ninja_mode = False
 
     def set_brightness_cap(self, brightness):
-        """Set the maxinum brightness value."""
-        assert 0.0 <= brightness <= 1.0
+        """Set the maximum brightness value."""
+        if not 0.0 <= brightness <= 1.0:
+            LOG.warning('Brightness cap should be > 0 and < 1, got '
+                        f'{brightness}')
+            brightness = 1.0
         self._brightness_cap = brightness
 
     def set_all_leds_brightness(self, value):
