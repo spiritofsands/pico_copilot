@@ -4,32 +4,32 @@ BOARD_CONFIG = {
     'leds': {
         'tail': {
             'leds': {
-                'tail_bars': {
+                'tail_1': {
                     'pin': 14
                 },
-                'top_v': {
+                'tail_2': {
                     'pin': 15
                 },
-                'mid_v': {
+                'tail_3': {
                     'pin': 16
                 },
-                'low_x': {
+                'tail_4': {
                     'pin': 17
                 },
             }
         },
         'front': {
             'leds': {
-                'front_bars': {
+                'front_1': {
                     'pin': 18
                 },
-                'segment_edge': {
+                'front_2': {
                     'pin': 19
                 },
-                'segment_mid': {
+                'front_3': {
                     'pin': 20
                 },
-                'segment_center': {
+                'front_4': {
                     'pin': 21
                 },
             }

@@ -18,32 +18,32 @@ BOARD_CONFIG = {
     'leds': {
         'tail': {
             'leds': {
-                'tail_bars': {
+                'tail_1': {
                     'pin': 1
                 },
-                'top_v': {
+                'tail_2': {
                     'pin': 2
                 },
-                'mid_v': {
+                'tail_3': {
                     'pin': 3
                 },
-                'low_x': {
+                'tail_4': {
                     'pin': 4
                 },
             }
         },
         'front': {
             'leds': {
-                'front_bars': {
+                'front_1': {
                     'pin': 5
                 },
-                'segment_edge': {
+                'front_2': {
                     'pin': 6
                 },
-                'segment_mid': {
+                'front_3': {
                     'pin': 7
                 },
-                'segment_center': {
+                'front_4': {
                     'pin': 8
                 },
             }
@@ -75,10 +75,10 @@ def generate_default_state():
                     'animation_mode': 'once',
                 },
                 'leds': {
-                    'tail_bars': {'brightness': 0},
-                    'top_v': {'brightness': 0},
-                    'mid_v': {'brightness': 0},
-                    'low_x': {'brightness': 0},
+                    'tail_1': {'brightness': 0},
+                    'tail_2': {'brightness': 0},
+                    'tail_3': {'brightness': 0},
+                    'tail_4': {'brightness': 0},
                 }
             },
             'front': {
@@ -87,10 +87,10 @@ def generate_default_state():
                     'animation_mode': 'once',
                 },
                 'leds': {
-                    'front_bars': {'brightness': 0},
-                    'segment_edge': {'brightness': 0},
-                    'segment_mid': {'brightness': 0},
-                    'segment_center': {'brightness': 0},
+                    'front_1': {'brightness': 0},
+                    'front_2': {'brightness': 0},
+                    'front_3': {'brightness': 0},
+                    'front_4': {'brightness': 0},
                 }
             },
             'status': {

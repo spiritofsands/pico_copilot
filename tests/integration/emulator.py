@@ -58,20 +58,20 @@ class Emulator:
         self._colors = {
             'tail': {
                 'leds': {
-                    'tail_bars': '#000000',
-                    'top_v': '#000000',
-                    'mid_v': '#000000',
-                    'low_x': '#000000',
+                    'tail_1': '#000000',
+                    'tail_2': '#000000',
+                    'tail_3': '#000000',
+                    'tail_4': '#000000',
                 },
                 'updated': True,
                 'color': self.RED_HSV_COLOR,
             },
             'front': {
                 'leds': {
-                    'front_bars': '#000000',
-                    'segment_edge': '#000000',
-                    'segment_mid': '#000000',
-                    'segment_center': '#000000',
+                    'front_1': '#000000',
+                    'front_2': '#000000',
+                    'front_3': '#000000',
+                    'front_4': '#000000',
                 },
                 'updated': True,
                 'color': self.YELLOW_HSV_COLOR,
@@ -233,50 +233,50 @@ class Emulator:
             *self._get_bar_rectangle(0,
                                      0),
             outline='black',
-            fill=self._colors['front']['leds']['front_bars'])
+            fill=self._colors['front']['leds']['front_1'])
 
         self._front_light_canvas.create_rectangle(
             *self._get_bar_rectangle(self._bar_width * 2,
                                      0),
             outline='black',
-            fill=self._colors['front']['leds']['segment_edge'])
+            fill=self._colors['front']['leds']['front_2'])
 
         self._front_light_canvas.create_rectangle(
             *self._get_bar_rectangle(self._bar_width * 4,
                                      0),
             outline='black',
-            fill=self._colors['front']['leds']['segment_mid'])
+            fill=self._colors['front']['leds']['front_3'])
 
         self._front_light_canvas.create_rectangle(
             *self._get_bar_rectangle(self._bar_width * 6,
                                      0),
             outline='black',
-            fill=self._colors['front']['leds']['segment_center'])
+            fill=self._colors['front']['leds']['front_4'])
 
     def _draw_tail_light(self):
         self._tail_light_canvas.create_rectangle(
             *self._get_bar_rectangle(0,
                                      0),
             outline='black',
-            fill=self._colors['tail']['leds']['tail_bars'])
+            fill=self._colors['tail']['leds']['tail_1'])
 
         self._tail_light_canvas.create_rectangle(
             *self._get_bar_rectangle(self._bar_width * 2,
                                      0),
             outline='black',
-            fill=self._colors['tail']['leds']['top_v'])
+            fill=self._colors['tail']['leds']['tail_2'])
 
         self._tail_light_canvas.create_rectangle(
             *self._get_bar_rectangle(self._bar_width * 4,
                                      0),
             outline='black',
-            fill=self._colors['tail']['leds']['mid_v'])
+            fill=self._colors['tail']['leds']['tail_3'])
 
         self._tail_light_canvas.create_rectangle(
             *self._get_bar_rectangle(self._bar_width * 6,
                                      0),
             outline='black',
-            fill=self._colors['tail']['leds']['low_x'])
+            fill=self._colors['tail']['leds']['tail_4'])
 
     def _draw_status_light(self):
         """Draw a status LED."""
