@@ -114,9 +114,9 @@ class ControlModule:
             self._modules[module].set_auto_brightness_modifier(brightness)
 
         # Hardcode status LED brightness modifier
-        status_led_brightness_modifier = max(brightness, 0.5)
-        self._modules['status_leds'].set_auto_brightness_modifier(
-            status_led_brightness_modifier)
+        # status_led_brightness_modifier = max(brightness, 0.5)
+        # self._modules['status_leds'].set_auto_brightness_modifier(
+        #     status_led_brightness_modifier)
 
     def update_config(self, state):
         """Externally change the state."""

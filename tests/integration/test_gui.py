@@ -71,6 +71,7 @@ def generate_default_state():
         {
             'tail': {
                 'state': {
+                    'hardware_brightness_modifier': 1.0,
                     'animation_playing': None,
                     'animation_mode': 'once',
                 },
@@ -83,6 +84,7 @@ def generate_default_state():
             },
             'front': {
                 'state': {
+                    'hardware_brightness_modifier': 0.8,
                     'animation_playing': None,
                     'animation_mode': 'once',
                 },
@@ -95,6 +97,7 @@ def generate_default_state():
             },
             'status': {
                 'state': {
+                    'hardware_brightness_modifier': 0.7,
                     'animation_playing': None,
                     'animation_mode': 'once',
                 },

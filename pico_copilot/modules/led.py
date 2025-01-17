@@ -15,11 +15,14 @@ class LedManager:
         """Led initialization."""
 
         self._auto_brightness_modifier = 1.0
+        self._hardware_brightness_modifier = 1.0
 
         self._board = board
         self._state = state
         self._name = name
         self._tick = tick_length
+        self._hardware_brightness_modifier = self._state.get_leds_state(
+            self._name)['hardware_brightness_modifier']
         leds = self._state.get_leds_brightness(self._name)
         self._led_names = leds.keys()
         self._set_led_brightness(leds)
@@ -67,7 +70,9 @@ class LedManager:
     def _adjust_brightness(self, brightness):
         """Adjust brightness taking the auto brightness into account."""
         assert 0.0 <= brightness <= 1.0
-        return brightness * self._auto_brightness_modifier
+        brightness_value = (brightness * self._auto_brightness_modifier *
+                            self._hardware_brightness_modifier)
+        return brightness_value
 
     def set_animation(self, animation_name, animation_mode):
         """Play leds animation."""
