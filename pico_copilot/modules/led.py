@@ -14,7 +14,7 @@ class LedManager:
     def __init__(self, board, state, name, tick_length):
         """Led initialization."""
 
-        self._brightness_cap = 1.0
+        self._auto_brightness_modifier = 1.0
 
         self._board = board
         self._state = state
@@ -32,13 +32,13 @@ class LedManager:
 
         self._ninja_mode = False
 
-    def set_brightness_cap(self, brightness):
-        """Set the maximum brightness value."""
+    def set_auto_brightness_modifier(self, brightness):
+        """Set the auto brightness modifier."""
         if not 0.0 <= brightness <= 1.0:
-            LOG.warning('Brightness cap should be > 0 and < 1, got '
+            LOG.warning('Brightness modifier should be > 0 and < 1, got '
                         f'{brightness}')
             brightness = 1.0
-        self._brightness_cap = brightness
+        self._auto_brightness_modifier = brightness
 
     def set_all_leds_brightness(self, value):
         """Set all leds to max brightness."""
@@ -65,9 +65,9 @@ class LedManager:
                 self._state.set_led_brightness(self._name, name, brightness)
 
     def _adjust_brightness(self, brightness):
-        """Adjust brightness taking the max brightness into account."""
+        """Adjust brightness taking the auto brightness into account."""
         assert 0.0 <= brightness <= 1.0
-        return brightness * self._brightness_cap
+        return brightness * self._auto_brightness_modifier
 
     def set_animation(self, animation_name, animation_mode):
         """Play leds animation."""

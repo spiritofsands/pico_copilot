@@ -54,7 +54,7 @@ class ControlModule:
         tasks = [None] * len(self._modules.values())
         while True:
             self._update_ninja_mode()
-            self._update_brightness_cap()
+            self._update_auto_brightness_modifier()
 
             # Defer module updates
             for index, module in enumerate(self._modules.values()):
@@ -105,17 +105,18 @@ class ControlModule:
                 self._ninja_mode_to_modules(False)
                 self._ninja_mode_enabled = False
 
-    def _update_brightness_cap(self):
+    def _update_auto_brightness_modifier(self):
         brightness, auto = self._brightness_map[self._brightness_map_index]
         if auto:
             brightness = self._state.get_sensor('light')
 
         for module in ['tail_leds', 'front_leds']:
-            self._modules[module].set_brightness_cap(brightness)
+            self._modules[module].set_auto_brightness_modifier(brightness)
 
-        status_led_brightness_cap = max(brightness, 0.5)
-        self._modules['status_leds'].set_brightness_cap(
-            status_led_brightness_cap)
+        # Hardcode status LED brightness modifier
+        status_led_brightness_modifier = max(brightness, 0.5)
+        self._modules['status_leds'].set_auto_brightness_modifier(
+            status_led_brightness_modifier)
 
     def update_config(self, state):
         """Externally change the state."""
