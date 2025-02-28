@@ -12,7 +12,7 @@ class State:
         self._max_brightness = 1
 
     def update(self, state):
-        """Used to externally change the state."""
+        """Externally change the state."""
         self._state = state.copy()
 
     def get_leds_brightness(self, led_type):
@@ -25,9 +25,11 @@ class State:
 
     def set_led_brightness(self, led_type, led_name, brightness):
         """Set led brightness."""
-        self._state['leds'][led_type]['leds'][led_name] = {'brightness':
-                                                           brightness}
+        self._state['leds'][led_type]['leds'][led_name] = {
+            'brightness': brightness
+        }
 
+    # TODO: refactor to more precise functions
     def set_leds_state(self, led_type, param, value):
         """Set leds state like animation."""
         self._state['leds'][led_type]['state'][param] = value

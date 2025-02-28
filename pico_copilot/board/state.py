@@ -10,6 +10,7 @@ STATE = {
                 'hardware_brightness_modifier': 1.0,
                 'animation_playing': 'startup',
                 'animation_mode': 'repeat',
+                'animation_finished': False,
             },
             'leds': {
                 'tail_1': {'brightness': _DEFAULT_BRIGHTNESS},
@@ -23,6 +24,7 @@ STATE = {
                 'hardware_brightness_modifier': 0.8,
                 'animation_playing': 'startup',
                 'animation_mode': 'repeat',
+                'animation_finished': False,
             },
             'leds': {
                 'front_1': {'brightness': _DEFAULT_BRIGHTNESS},
@@ -36,6 +38,7 @@ STATE = {
                 'hardware_brightness_modifier': 0.7,
                 'animation_playing': 'heartbeat',
                 'animation_mode': 'repeat',
+                'animation_finished': False,
             },
             'leds': {
                 'status': {'brightness': _DEFAULT_BRIGHTNESS},
@@ -59,6 +62,7 @@ STATE = {
             'long_click': False,
         },
     },
+    # TODO: remove
     'events':  # move to RO config?
     {
         'single_click': '',  # TBD

@@ -74,6 +74,7 @@ def generate_default_state():
                     'hardware_brightness_modifier': 1.0,
                     'animation_playing': None,
                     'animation_mode': 'once',
+                    'animation_finished': False,
                 },
                 'leds': {
                     'tail_1': {'brightness': 0},
@@ -87,6 +88,7 @@ def generate_default_state():
                     'hardware_brightness_modifier': 0.8,
                     'animation_playing': None,
                     'animation_mode': 'once',
+                    'animation_finished': False,
                 },
                 'leds': {
                     'front_1': {'brightness': 0},
@@ -100,6 +102,7 @@ def generate_default_state():
                     'hardware_brightness_modifier': 0.7,
                     'animation_playing': None,
                     'animation_mode': 'once',
+                    'animation_finished': False,
                 },
                 'leds': {
                     'status': {'brightness': 0},

@@ -77,6 +77,7 @@ class LedManager:
     def set_animation(self, animation_name, animation_mode):
         """Play leds animation."""
         self.updates_available = True
+
         self._current_animation = animation_name
         self._animation_mode = animation_mode
         self._animation = Animation(self._current_animation, self._tick)
@@ -104,8 +105,15 @@ class LedManager:
                     # LOG.debug('Repeating animation '
                     #           f'"{self._current_animation}"')
                     self._animation.reset()
+                    self._state.set_leds_state(self._name,
+                                               'animation_finished',
+                                               False)
+
                 else:
                     self.updates_available = False
+                    self._state.set_leds_state(self._name,
+                                               'animation_finished',
+                                               True)
 
     def set_ninja_mode(self, state):
         self._ninja_mode = state

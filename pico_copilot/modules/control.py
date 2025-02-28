@@ -7,6 +7,7 @@ from pico_copilot.modules.sensor import SensorManager
 from pico_copilot.modules.power import PowerModule
 from pico_copilot.modules.board_interface import BoardInterface
 from pico_copilot.modules.button import ButtonModule
+from pico_copilot.modules.modes import StartupMode
 from pico_copilot.modules.state import State
 from pico_copilot.utils.logger import LOG
 
@@ -16,10 +17,12 @@ class ControlModule:
 
     def __init__(self, board, state):
         """All modules initialization."""
+        # event handling speed
         self._tick = 0.01
         self._board = board
         self._state = State(state)
         self._brightness_map_index = 0
+        # changed by a doubleclick
         self._brightness_map = [
             # bri auto_brightness
             (0.5,
@@ -29,14 +32,18 @@ class ControlModule:
             (1.0,
              False)
         ]
+        # TODO: remove
         self._ninja_mode = False
         self._ninja_mode_enabled = False
 
+        # TODO: remove
         self._event_mapping = {
             'toggle_brightness': self._toggle_brightness,
             'change_animation': self._change_animation,
             'ninja_mode': self._toggle_ninja_mode,
         }
+
+        self._mode = StartupMode(self._state)
 
         self._modules = {}
         self._create_led_module('tail')
@@ -53,7 +60,9 @@ class ControlModule:
 
         tasks = [None] * len(self._modules.values())
         while True:
+            # TODO: remove
             self._update_ninja_mode()
+
             self._update_auto_brightness_modifier()
 
             # Defer module updates
@@ -63,8 +72,16 @@ class ControlModule:
             await asyncio.sleep(self._tick)
 
             self._handle_button_events()
+            self._update_mode()
 
+            # TODO: needed?
             await asyncio.gather(*tasks)
+
+    def _update_mode(self):
+        new_mode = self._mode.check_events()
+        if new_mode:
+            self._mode = new_mode
+            self._set_animations()
 
     def _create_led_module(self, name):
         self._modules[f'{name}_leds'] = LedManager(self._board,
@@ -87,12 +104,16 @@ class ControlModule:
     def _set_animations(self):
         """Set initial animations."""
         for group in ('tail', 'front', 'status'):
-            if self._state.get_leds_state(group)['animation_playing']:
-                animation = self._state.get_leds_state(
-                    group)['animation_playing']
-                mode = self._state.get_leds_state(group)['animation_mode']
+            animation = self._mode.animation[group]['name']
+            mode = self._mode.animation[group]['mode']
+            if animation and mode:
+                self._state.set_leds_state(group,
+                                           'animation_playing',
+                                           animation)
+                self._state.set_leds_state(group, 'animation_mode', mode)
 
                 LOG.info(f'Playing "{animation}" on {group}_leds ({mode})')
+                # TODO: why not from a state?
                 self._modules[f'{group}_leds'].set_animation(animation, mode)
 
     def _update_ninja_mode(self):
@@ -107,7 +128,7 @@ class ControlModule:
 
     def _update_auto_brightness_modifier(self):
         brightness, auto = self._brightness_map[self._brightness_map_index]
-        if auto:
+        if auto and self._mode.auto_brightness:
             brightness = self._state.get_sensor('light')
 
         for module in ['tail_leds', 'front_leds']:
@@ -129,7 +150,7 @@ class ControlModule:
             if happened:
                 LOG.debug(f'Event {event} happened')
                 self._state.remove_button_event('button1', event)
-                action = self._state.get_events()[event]
+                action = self._mode.button_events[event]
                 if action:
                     self._event_mapping[action]()
                 else:
