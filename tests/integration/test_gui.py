@@ -167,8 +167,11 @@ def start_control_module():
 def update_control_module_state():
     """Change the control module state."""
     sleep(1)
-    state = modify_state(STATE, animated=True)
-    CONTROL_MODULE.update_config(state)
+
+    # FIXME: not needed?
+    # state = modify_state(STATE, animated=True)
+    # CONTROL_MODULE.update_config(state)
+
     # TODO TEST CODE HERE
     while True:
         sleep(1)

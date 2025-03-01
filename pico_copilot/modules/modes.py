@@ -29,7 +29,7 @@ class Mode:
         self.tail_brightness_cap = None
         self.status_brightness_cap = None
 
-        self.button_events = {
+        self.button_actions = {
             'single_click': '',
             'double_click': '',
             'long_click': '',
@@ -62,7 +62,7 @@ class StartupMode(Mode):
             },
         }
 
-        self.button_events = {
+        self.button_actions = {
             'single_click': '',  # TBD
             'double_click': '',
             'long_click': 'poweroff',
@@ -76,6 +76,7 @@ class StartupMode(Mode):
 
         if leds_finished_animation:
             return NormalMode(self._state)
+
         return None
 
 
@@ -102,10 +103,10 @@ class NormalMode(Mode):
             },
         }
 
-        self.button_events = {
+        self.button_actions = {
             'single_click': '',  # TBD
             'double_click': 'toggle_brightness',
-            'long_click': 'poweroff_mode',
+            'long_click': 'poweroff',
         }
 
     def check_events(self):
@@ -135,8 +136,8 @@ class PoweroffMode(Mode):
             },
         }
 
-        self.button_events = {
+        self.button_actions = {
             'single_click': '',
             'double_click': '',
-            'long_click': 'startup_mode',
+            'long_click': 'startup',
         }

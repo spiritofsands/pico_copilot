@@ -7,7 +7,7 @@ from pico_copilot.modules.sensor import SensorManager
 from pico_copilot.modules.power import PowerModule
 from pico_copilot.modules.board_interface import BoardInterface
 from pico_copilot.modules.button import ButtonModule
-from pico_copilot.modules.modes import StartupMode
+from pico_copilot.modules.modes import StartupMode, PoweroffMode
 from pico_copilot.modules.state import State
 from pico_copilot.utils.logger import LOG
 
@@ -36,13 +36,15 @@ class ControlModule:
         self._ninja_mode = False
         self._ninja_mode_enabled = False
 
-        # TODO: remove
+        # is called by a mapping in the current mode
         self._event_mapping = {
             'toggle_brightness': self._toggle_brightness,
             'change_animation': self._change_animation,
-            'ninja_mode': self._toggle_ninja_mode,
+            'poweroff': self._set_poweroff_mode,
+            'startup': self._set_startup_mode,
         }
 
+        # initial mode
         self._mode = StartupMode(self._state)
 
         self._modules = {}
@@ -77,10 +79,12 @@ class ControlModule:
             # TODO: needed?
             await asyncio.gather(*tasks)
 
-    def _update_mode(self):
-        new_mode = self._mode.check_events()
-        if new_mode:
-            self._mode = new_mode
+    def _update_mode(self, mode=None):
+        if not mode:
+            mode = self._mode.check_events()
+
+        if mode:
+            self._mode = mode
             self._set_animations()
 
     def _create_led_module(self, name):
@@ -146,15 +150,22 @@ class ControlModule:
         self._set_animations()
 
     def _handle_button_events(self):
-        for event, happened in self._state.get_button('button1').items():
-            if happened:
-                LOG.debug(f'Event {event} happened')
-                self._state.remove_button_event('button1', event)
-                action = self._mode.button_events[event]
-                if action:
-                    self._event_mapping[action]()
-                else:
-                    LOG.info(f'No action was set for {event}')
+        if self._state.has_button_events('button1'):
+            for event in self._state.get_button_events('button1'):
+                happened = self._state.retrieve_button_event('button1', event)
+                if happened:
+                    LOG.debug(f'Event {event} happened')
+                    action = self._mode.button_actions[event]
+                    if action:
+                        self._event_mapping[action]()
+                    else:
+                        LOG.info(f'No action was set for {event}')
+
+    def _set_poweroff_mode(self):
+        self._update_mode(PoweroffMode(self._state))
+
+    def _set_startup_mode(self):
+        self._update_mode(StartupMode(self._state))
 
     def _toggle_brightness(self):
         LOG.debug('Toggle brightness')
@@ -165,10 +176,6 @@ class ControlModule:
     def _change_animation(self):
         LOG.debug('Change animation')
         # TBD
-
-    def _toggle_ninja_mode(self):
-        LOG.debug('Toggle ninja mode')
-        self._ninja_mode = not self._ninja_mode
 
     def _ninja_mode_to_modules(self, state):
         LOG.debug(f'Ninja mode: {state}')

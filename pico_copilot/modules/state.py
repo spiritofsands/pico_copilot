@@ -46,17 +46,25 @@ class State:
         """Set sensor data."""
         self._state['sensors'][sensor_name]['value'] = value
 
-    def get_button(self, button_name):
+    def get_button_events(self, button_name):
         """Get button states."""
-        return self._state['buttons'][button_name]
+        return self._state['buttons'][button_name].keys()
 
     def add_button_event(self, button_name, event):
         """Set.button event true"""
         self._state['buttons'][button_name][event] = True
 
-    def remove_button_event(self, button_name, event):
+    def retrieve_button_event(self, button_name, event):
         """Set.button event true"""
-        self._state['buttons'][button_name][event] = False
+        hapenned = self._state['buttons'][button_name][event]
+        if hapenned:
+            self._state['buttons'][button_name][event] = False
+        return hapenned
 
+    def has_button_events(self, button_name):
+        return any(value
+                   for value in self._state['buttons'][button_name].values())
+
+    # TODO: remove
     def get_events(self):
         return self._state['events']
