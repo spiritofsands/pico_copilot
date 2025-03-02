@@ -7,7 +7,12 @@ from pico_copilot.modules.sensor import SensorManager
 from pico_copilot.modules.power import PowerModule
 from pico_copilot.modules.board_interface import BoardInterface
 from pico_copilot.modules.button import ButtonModule
-from pico_copilot.modules.modes import StartupMode, PoweroffMode
+from pico_copilot.modules.modes import (
+    StartupMode,
+    PoweroffMode,
+    StaticMode,
+    NormalMode,
+)
 from pico_copilot.modules.state import State
 from pico_copilot.utils.logger import LOG
 
@@ -21,25 +26,14 @@ class ControlModule:
         self._tick = 0.01
         self._board = board
         self._state = State(state)
-        self._brightness_map_index = 0
-        # changed by a doubleclick
-        self._brightness_map = [
-            # bri auto_brightness
-            (0.5,
-             True),
-            (0.5,
-             False),
-            (1.0,
-             False)
-        ]
         self._mode = None
 
         # is called by a mapping in the current mode
         self._event_mapping = {
-            'toggle_brightness': self._toggle_brightness,
-            'change_animation': self._change_animation,
             'poweroff': self._set_poweroff_mode,
             'startup': self._set_startup_mode,
+            'static': self._set_static_mode,
+            'normal': self._set_normal_mode,
         }
 
         self._modules = {}
@@ -64,6 +58,7 @@ class ControlModule:
                                                 'button1',
                                                 self._tick)
 
+        # Set the initial mode
         self._update_mode(StartupMode(self._state))
 
     async def start(self):
@@ -98,33 +93,33 @@ class ControlModule:
         if mode:
             self._mode = mode
             self._set_animations()
+            self._set_brightness()
             self._toggle_modules()
 
     def _set_animations(self):
         """Set initial animations."""
         for group in ('tail', 'front', 'status'):
-            animation = self._mode.animation[group]['name']
-            mode = self._mode.animation[group]['mode']
+            animation = self._mode.leds[group]['animation']['name']
+            mode = self._mode.leds[group]['animation']['mode']
 
+            # TODO: why not in the module?
             self._state.set_leds_state(group, 'animation_playing', animation)
             self._state.set_leds_state(group, 'animation_mode', mode)
 
-            LOG.info(f'Playing "{animation}" on {group}_leds ({mode})')
-            # TODO: why not from a state?
             self._modules[f'{group}_leds'].set_animation(animation, mode)
 
+    def _set_brightness(self):
+        """Set Led brightness."""
+        for group in ('tail', 'front', 'status'):
+            brightness = self._mode.leds[group]['brightness']
+            if brightness:
+                self._modules[f'{group}_leds'].set_all_leds_brightness(
+                    brightness)
+
     def _update_auto_brightness_modifier(self):
-        brightness, auto = self._brightness_map[self._brightness_map_index]
-        if auto and self._mode.auto_brightness:
-            brightness = self._state.get_sensor('light')
-
-        for module in ['tail_leds', 'front_leds']:
+        brightness = self._state.get_sensor('light')
+        for module in ['tail_leds', 'front_leds', 'status_leds']:
             self._modules[module].set_auto_brightness_modifier(brightness)
-
-        # Hardcode status LED brightness modifier
-        # status_led_brightness_modifier = max(brightness, 0.5)
-        # self._modules['status_leds'].set_auto_brightness_modifier(
-        #     status_led_brightness_modifier)
 
     # TODO: remove
     def update_config(self, state):
@@ -132,6 +127,7 @@ class ControlModule:
         LOG.info('State was overwritten.')
         self._state.update(state)
         self._set_animations()
+        self._set_brightness()
 
     def _handle_button_events(self):
         if self._state.has_button_events('button1'):
@@ -151,12 +147,8 @@ class ControlModule:
     def _set_startup_mode(self):
         self._update_mode(StartupMode(self._state))
 
-    def _toggle_brightness(self):
-        LOG.debug('Toggle brightness')
-        self._brightness_map_index += 1
-        if self._brightness_map_index >= len(self._brightness_map):
-            self._brightness_map_index = 0
+    def _set_static_mode(self):
+        self._update_mode(StaticMode(self._state))
 
-    def _change_animation(self):
-        LOG.debug('Change animation')
-        # TBD
+    def _set_normal_mode(self):
+        self._update_mode(NormalMode(self._state))

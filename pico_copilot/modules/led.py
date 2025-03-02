@@ -49,6 +49,8 @@ class LedManager:
             }
             for led_name in self._led_names
         }
+
+        LOG.info(f'All LED brightness of {self._name} is set to: {value}')
         self._set_led_brightness(leds)
 
     def _set_led_brightness(self, leds):
@@ -75,13 +77,17 @@ class LedManager:
     def set_animation(self, animation_name, animation_mode):
         """Play leds animation or disable it."""
         if not (animation_name and animation_mode):
+            LOG.info(f'LED {self._name}: animation disabled')
             self.updates_available = False
+            self._animation = None
             return
 
         self.updates_available = True
         self._current_animation = animation_name
         self._animation_mode = animation_mode
         self._animation = Animation(self._current_animation, self._tick)
+        LOG.info(f'LED {self._name}: animation was set to '
+                 f'{self._current_animation} ({self._animation_mode})')
 
     async def update(self):
         if not self.updates_available:
@@ -103,8 +109,8 @@ class LedManager:
                 self._set_led_brightness(leds)
             else:
                 if self._animation_mode == 'repeat':
-                    # LOG.debug('Repeating animation '
-                    #           f'"{self._current_animation}"')
+                    LOG.debug('Repeating animation '
+                              f'"{self._current_animation}"')
                     self._animation.reset()
                     self._state.set_leds_state(self._name,
                                                'animation_finished',
@@ -112,6 +118,7 @@ class LedManager:
 
                 else:
                     self.updates_available = False
+                    LOG.debug('Animation finished')
                     self._state.set_leds_state(self._name,
                                                'animation_finished',
                                                True)

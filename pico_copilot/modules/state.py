@@ -29,6 +29,11 @@ class State:
             'brightness': brightness
         }
 
+    def set_all_leds_brightness(self, led_type, brightness):
+        """Set all leds brightness."""
+        for led_name, value in self._state['leds'][led_type]['leds'].items():
+            value['brightness'] = brightness
+
     # TODO: refactor to more precise functions
     def set_leds_state(self, led_type, param, value):
         """Set leds state like animation."""

@@ -9,19 +9,27 @@ class Mode:
     def __init__(self, state):
         self._state = state
 
-        self.auto_brightness = None
-        self.animation = {
+        self.leds = {
             'tail': {
-                'name': None,
-                'mode': None,
+                'animation': {
+                    'name': None,
+                    'mode': None,
+                },
+                'brightness': None,
             },
             'front': {
-                'name': None,
-                'mode': None,
+                'animation': {
+                    'name': None,
+                    'mode': None,
+                },
+                'brightness': None,
             },
             'status': {
-                'name': None,
-                'mode': None,
+                'animation': {
+                    'name': None,
+                    'mode': None,
+                },
+                'brightness': None,
             },
         }
 
@@ -50,19 +58,28 @@ class StartupMode(Mode):
         self._state = state
 
         LOG.info('Startup Mode')
-        self.auto_brightness = True
-        self.animation = {
+
+        self.leds = {
             'tail': {
-                'name': 'startup',
-                'mode': 'once',
+                'animation': {
+                    'name': 'startup',
+                    'mode': 'once',
+                },
+                'brightness': None,
             },
             'front': {
-                'name': 'startup',
-                'mode': 'once',
+                'animation': {
+                    'name': 'startup',
+                    'mode': 'once',
+                },
+                'brightness': None,
             },
             'status': {
-                'name': 'startup',
-                'mode': 'once',
+                'animation': {
+                    'name': 'startup',
+                    'mode': 'once',
+                },
+                'brightness': None,
             },
         }
 
@@ -99,19 +116,28 @@ class NormalMode(Mode):
         self._state = state
 
         LOG.info('Normal Mode')
-        self.auto_brightness = True
-        self.animation = {
+
+        self.leds = {
             'tail': {
-                'name': 'normal',
-                'mode': 'repeat',
+                'animation': {
+                    'name': 'normal',
+                    'mode': 'repeat',
+                },
+                'brightness': None,
             },
             'front': {
-                'name': 'normal',
-                'mode': 'repeat',
+                'animation': {
+                    'name': 'normal',
+                    'mode': 'repeat',
+                },
+                'brightness': None,
             },
             'status': {
-                'name': 'normal',
-                'mode': 'repeat',
+                'animation': {
+                    'name': 'normal',
+                    'mode': 'repeat',
+                },
+                'brightness': None,
             },
         }
 
@@ -125,7 +151,56 @@ class NormalMode(Mode):
 
         self.button_actions = {
             'single_click': '',  # TBD
-            'double_click': 'toggle_brightness',
+            'double_click': 'static',
+            'long_click': 'poweroff',
+        }
+
+    def check_events(self):
+        return None
+
+
+class StaticMode(Mode):
+    """Normal mode."""
+
+    def __init__(self, state):
+        self._state = state
+
+        LOG.info('Static Mode')
+        self.leds = {
+            'tail': {
+                'animation': {
+                    'name': None,
+                    'mode': None,
+                },
+                'brightness': 0.5,
+            },
+            'front': {
+                'animation': {
+                    'name': None,
+                    'mode': None,
+                },
+                'brightness': 0.5,
+            },
+            'status': {
+                'animation': {
+                    'name': None,
+                    'mode': None,
+                },
+                'brightness': 0.5,
+            },
+        }
+
+        self.module_enabled = {
+            'tail_leds': True,
+            'front_leds': True,
+            'status_leds': True,
+            'sensors': False,
+            'button1': True,
+        }
+
+        self.button_actions = {
+            'single_click': '',  # TBD
+            'double_click': 'normal',
             'long_click': 'poweroff',
         }
 
@@ -140,19 +215,28 @@ class PoweroffMode(Mode):
         self._state = state
 
         LOG.info('Poweroff Mode')
-        self.auto_brightness = False
-        self.animation = {
+
+        self.leds = {
             'tail': {
-                'name': None,
-                'mode': None,
+                'animation': {
+                    'name': None,
+                    'mode': None,
+                },
+                'brightness': 0.0,
             },
             'front': {
-                'name': None,
-                'mode': None,
+                'animation': {
+                    'name': None,
+                    'mode': None,
+                },
+                'brightness': 0.0,
             },
             'status': {
-                'name': None,
-                'mode': None,
+                'animation': {
+                    'name': None,
+                    'mode': None,
+                },
+                'brightness': 0.0,
             },
         }
 
