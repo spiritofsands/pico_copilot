@@ -33,8 +33,6 @@ class LedManager:
 
         self._animation = None
 
-        self._ninja_mode = False
-
     def set_auto_brightness_modifier(self, brightness):
         """Set the auto brightness modifier."""
         if not 0.0 <= brightness <= 1.0:
@@ -89,7 +87,7 @@ class LedManager:
         if not self.updates_available:
             return
 
-        if self._animation or (self._ninja_mode and self._name == 'status'):
+        if self._animation:
             if not self._animation.finished:
                 frame = self._animation.generate_frame()
                 # LOG.debug(f'Got frame {frame}')
@@ -124,15 +122,3 @@ class LedManager:
         LOG.info(f'LED {self._name} enabled: {enabled}')
         if not enabled:
             self.set_all_leds_brightness(0.0)
-
-    def set_ninja_mode(self, state):
-        self._ninja_mode = state
-
-        if self._ninja_mode:
-            if self._name == 'status':
-                self.set_all_leds_brightness(0.5)
-            else:
-                self.set_all_leds_brightness(0.0)
-                self.updates_available = False
-        else:
-            self.updates_available = True

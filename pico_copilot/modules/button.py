@@ -32,7 +32,6 @@ class ButtonModule:
         self._long_click_possible = False
         self._single_click_possible = False
         self._click_handled = False
-        self.events = []
 
         # Always hardcoded
         self.updates_available = True
@@ -119,9 +118,6 @@ class ButtonModule:
         LOG.info(f'Got event: {event}')
 
         self._state.add_button_event(self._name, event)
-
-    def set_ninja_mode(self, _state):
-        pass
 
     def toggle(self, enabled):
         """Toggle the module."""

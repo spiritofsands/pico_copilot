@@ -62,11 +62,4 @@ STATE = {
             'long_click': False,
         },
     },
-    # TODO: remove
-    'events':  # move to RO config?
-    {
-        'single_click': '',  # TBD
-        'double_click': 'toggle_brightness',
-        'long_click': 'ninja_mode',
-    }
 }

@@ -32,9 +32,6 @@ class ControlModule:
             (1.0,
              False)
         ]
-        # TODO: remove
-        self._ninja_mode = False
-        self._ninja_mode_enabled = False
         self._mode = None
 
         # is called by a mapping in the current mode
@@ -75,9 +72,6 @@ class ControlModule:
 
         tasks = [None] * len(self._modules.values())
         while True:
-            # TODO: remove
-            self._update_ninja_mode()
-
             self._update_auto_brightness_modifier()
 
             # Defer module updates
@@ -118,16 +112,6 @@ class ControlModule:
             LOG.info(f'Playing "{animation}" on {group}_leds ({mode})')
             # TODO: why not from a state?
             self._modules[f'{group}_leds'].set_animation(animation, mode)
-
-    def _update_ninja_mode(self):
-        if self._ninja_mode:
-            if not self._ninja_mode_enabled:
-                self._ninja_mode_to_modules(True)
-                self._ninja_mode_enabled = True
-        else:
-            if self._ninja_mode_enabled:
-                self._ninja_mode_to_modules(False)
-                self._ninja_mode_enabled = False
 
     def _update_auto_brightness_modifier(self):
         brightness, auto = self._brightness_map[self._brightness_map_index]
@@ -176,8 +160,3 @@ class ControlModule:
     def _change_animation(self):
         LOG.debug('Change animation')
         # TBD
-
-    def _ninja_mode_to_modules(self, state):
-        LOG.debug(f'Ninja mode: {state}')
-        for module in self._modules.values():
-            module.set_ninja_mode(state)

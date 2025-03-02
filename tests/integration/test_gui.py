@@ -126,12 +126,6 @@ def generate_default_state():
                 'long_click': False,
             },
         },
-        'events':  # move to RO config?
-        {
-            'single_click': '',  # TBD
-            'double_click': 'toggle_brightness',
-            'long_click': 'ninja_mode',
-        }
     }
 
 

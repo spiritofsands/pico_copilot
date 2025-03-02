@@ -64,7 +64,3 @@ class State:
     def has_button_events(self, button_name):
         return any(value
                    for value in self._state['buttons'][button_name].values())
-
-    # TODO: remove
-    def get_events(self):
-        return self._state['events']
