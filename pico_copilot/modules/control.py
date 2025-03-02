@@ -35,6 +35,7 @@ class ControlModule:
         # TODO: remove
         self._ninja_mode = False
         self._ninja_mode_enabled = False
+        self._mode = None
 
         # is called by a mapping in the current mode
         self._event_mapping = {
@@ -44,17 +45,29 @@ class ControlModule:
             'startup': self._set_startup_mode,
         }
 
-        # initial mode
-        self._mode = StartupMode(self._state)
-
         self._modules = {}
-        self._create_led_module('tail')
-        self._create_led_module('front')
-        self._create_led_module('status')
-        self._create_sensors_module('light')
-        self._create_buttons_module('button1')
+        self._modules['tail_leds'] = LedManager(self._board,
+                                                self._state,
+                                                'tail',
+                                                self._tick)
+        self._modules['front_leds'] = LedManager(self._board,
+                                                 self._state,
+                                                 'front',
+                                                 self._tick)
+        self._modules['status_leds'] = LedManager(self._board,
+                                                  self._state,
+                                                  'status',
+                                                  self._tick)
+        self._modules['sensors'] = SensorManager(self._board,
+                                                 self._state,
+                                                 'light',
+                                                 self._tick)
+        self._modules['button1'] = ButtonModule(self._board,
+                                                self._state,
+                                                'button1',
+                                                self._tick)
 
-        self._set_animations()
+        self._update_mode(StartupMode(self._state))
 
     async def start(self):
         """Start the control module routine."""
@@ -79,46 +92,32 @@ class ControlModule:
             # TODO: needed?
             await asyncio.gather(*tasks)
 
+    def _toggle_modules(self):
+        for module, enabled in self._mode.module_enabled.items():
+            self._modules[module].toggle(enabled)
+
     def _update_mode(self, mode=None):
+        """Set a new mode explicitly of implicitly."""
         if not mode:
             mode = self._mode.check_events()
 
         if mode:
             self._mode = mode
             self._set_animations()
-
-    def _create_led_module(self, name):
-        self._modules[f'{name}_leds'] = LedManager(self._board,
-                                                   self._state,
-                                                   name,
-                                                   self._tick)
-
-    def _create_sensors_module(self, name):
-        self._modules['sensors'] = SensorManager(self._board,
-                                                 self._state,
-                                                 name,
-                                                 self._tick)
-
-    def _create_buttons_module(self, name):
-        self._modules['button'] = ButtonModule(self._board,
-                                               self._state,
-                                               name,
-                                               self._tick)
+            self._toggle_modules()
 
     def _set_animations(self):
         """Set initial animations."""
         for group in ('tail', 'front', 'status'):
             animation = self._mode.animation[group]['name']
             mode = self._mode.animation[group]['mode']
-            if animation and mode:
-                self._state.set_leds_state(group,
-                                           'animation_playing',
-                                           animation)
-                self._state.set_leds_state(group, 'animation_mode', mode)
 
-                LOG.info(f'Playing "{animation}" on {group}_leds ({mode})')
-                # TODO: why not from a state?
-                self._modules[f'{group}_leds'].set_animation(animation, mode)
+            self._state.set_leds_state(group, 'animation_playing', animation)
+            self._state.set_leds_state(group, 'animation_mode', mode)
+
+            LOG.info(f'Playing "{animation}" on {group}_leds ({mode})')
+            # TODO: why not from a state?
+            self._modules[f'{group}_leds'].set_animation(animation, mode)
 
     def _update_ninja_mode(self):
         if self._ninja_mode:
@@ -143,6 +142,7 @@ class ControlModule:
         # self._modules['status_leds'].set_auto_brightness_modifier(
         #     status_led_brightness_modifier)
 
+    # TODO: remove
     def update_config(self, state):
         """Externally change the state."""
         LOG.info('State was overwritten.')

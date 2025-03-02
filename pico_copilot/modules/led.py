@@ -44,7 +44,7 @@ class LedManager:
         self._auto_brightness_modifier = brightness
 
     def set_all_leds_brightness(self, value):
-        """Set all leds to max brightness."""
+        """Set all leds to a brightness."""
         leds = {
             led_name: {
                 'brightness': value
@@ -75,9 +75,12 @@ class LedManager:
         return brightness_value
 
     def set_animation(self, animation_name, animation_mode):
-        """Play leds animation."""
-        self.updates_available = True
+        """Play leds animation or disable it."""
+        if not (animation_name and animation_mode):
+            self.updates_available = False
+            return
 
+        self.updates_available = True
         self._current_animation = animation_name
         self._animation_mode = animation_mode
         self._animation = Animation(self._current_animation, self._tick)
@@ -114,6 +117,13 @@ class LedManager:
                     self._state.set_leds_state(self._name,
                                                'animation_finished',
                                                True)
+
+    def toggle(self, enabled):
+        """Toggle the module."""
+        self.updates_available = enabled
+        LOG.info(f'LED {self._name} enabled: {enabled}')
+        if not enabled:
+            self.set_all_leds_brightness(0.0)
 
     def set_ninja_mode(self, state):
         self._ninja_mode = state

@@ -122,3 +122,8 @@ class ButtonModule:
 
     def set_ninja_mode(self, _state):
         pass
+
+    def toggle(self, enabled):
+        """Toggle the module."""
+        if not enabled:
+            LOG.warning('Button module can not be disabled')

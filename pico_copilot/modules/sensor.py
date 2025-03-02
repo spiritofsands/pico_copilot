@@ -16,7 +16,6 @@ class SensorManager:
         self._name = name
         self._tick = tick_length
         self._update_interval = self._state.get_sensor_update_interval('light')
-        # TBD: hardcoded
         self.updates_available = True
         self._ninja_mode = False
 
@@ -28,6 +27,9 @@ class SensorManager:
         return value
 
     async def update(self):
+        if not self.updates_available:
+            return
+
         if self._time >= self._update_interval:
             self._state.set_sensor(self._name, self._get_light_sensor())
             self._reset_time()
@@ -45,3 +47,8 @@ class SensorManager:
 
     def _reset_time(self):
         self._time = 0
+
+    def toggle(self, enabled):
+        """Toggle the module."""
+        self.updates_available = enabled
+        LOG.info(f'Light sensor enabled: {enabled}')

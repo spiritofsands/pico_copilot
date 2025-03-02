@@ -24,10 +24,14 @@ class Mode:
                 'mode': None,
             },
         }
-        # TODO
-        self.front_brightness_cap = None
-        self.tail_brightness_cap = None
-        self.status_brightness_cap = None
+
+        self.module_enabled = {
+            'tail_leds': True,
+            'front_leds': True,
+            'status_leds': True,
+            'sensors': True,
+            'button1': True,
+        }
 
         self.button_actions = {
             'single_click': '',
@@ -60,6 +64,14 @@ class StartupMode(Mode):
                 'name': 'startup',
                 'mode': 'once',
             },
+        }
+
+        self.module_enabled = {
+            'tail_leds': True,
+            'front_leds': True,
+            'status_leds': True,
+            'sensors': True,
+            'button1': True,
         }
 
         self.button_actions = {
@@ -103,6 +115,14 @@ class NormalMode(Mode):
             },
         }
 
+        self.module_enabled = {
+            'tail_leds': True,
+            'front_leds': True,
+            'status_leds': True,
+            'sensors': True,
+            'button1': True,
+        }
+
         self.button_actions = {
             'single_click': '',  # TBD
             'double_click': 'toggle_brightness',
@@ -134,6 +154,14 @@ class PoweroffMode(Mode):
                 'name': None,
                 'mode': None,
             },
+        }
+
+        self.module_enabled = {
+            'tail_leds': False,
+            'front_leds': False,
+            'status_leds': False,
+            'sensors': False,
+            'button1': True,
         }
 
         self.button_actions = {
