@@ -21,8 +21,8 @@ class LedManager:
         self._state = state
         self._name = name
         self._tick = tick_length
-        self._hardware_brightness_modifier = self._state.get_leds_state(
-            self._name)['hardware_brightness_modifier']
+        self._hardware_brightness_modifier = (
+            self._state.get_leds_hardware_brightness_modifier(self._name))
         leds = self._state.get_leds_brightness(self._name)
         self._led_names = leds.keys()
         self._set_led_brightness(leds)
@@ -112,16 +112,12 @@ class LedManager:
                     LOG.debug('Repeating animation '
                               f'"{self._current_animation}"')
                     self._animation.reset()
-                    self._state.set_leds_state(self._name,
-                                               'animation_finished',
-                                               False)
+                    self._state.set_leds_animation_finished(self._name, False)
 
                 else:
                     self.updates_available = False
                     LOG.debug('Animation finished')
-                    self._state.set_leds_state(self._name,
-                                               'animation_finished',
-                                               True)
+                    self._state.set_leds_animation_finished(self._name, True)
 
     def toggle(self, enabled):
         """Toggle the module."""

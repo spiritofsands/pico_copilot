@@ -129,6 +129,7 @@ def generate_default_state():
     }
 
 
+# TODO: use in tests or remove
 def modify_state(original_state, animated=False, single_click=False):
     """Generate config for the system."""
     state = deepcopy(original_state)
@@ -161,10 +162,6 @@ def start_control_module():
 def update_control_module_state():
     """Change the control module state."""
     sleep(1)
-
-    # FIXME: not needed?
-    # state = modify_state(STATE, animated=True)
-    # CONTROL_MODULE.update_config(state)
 
     # TODO TEST CODE HERE
     while True:

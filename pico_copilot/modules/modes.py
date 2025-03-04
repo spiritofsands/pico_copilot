@@ -47,6 +47,15 @@ class Mode:
             'long_click': '',
         }
 
+        self._update_animations_state()
+
+    def _update_animations_state(self):
+        for group in ('tail', 'front', 'status'):
+            animation = self.leds[group]['animation']['name']
+            mode = self.leds[group]['animation']['mode']
+            self._state.set_leds_animation_playing(group, animation)
+            self._state.set_leds_animation_mode(group, mode)
+
     def check_events(self):
         return None
 
@@ -55,7 +64,7 @@ class StartupMode(Mode):
     """Startup mode."""
 
     def __init__(self, state):
-        self._state = state
+        super().__init__(state)
 
         LOG.info('Startup Mode')
 
@@ -97,13 +106,12 @@ class StartupMode(Mode):
             'long_click': 'poweroff',
         }
 
+        self._update_animations_state()
+
     def check_events(self):
         """Check for events and return a new state or None."""
-        leds_finished_animation = (
-            self._state.get_leds_state('tail')['animation_finished']
-            and self._state.get_leds_state('front')['animation_finished'])
-
-        if leds_finished_animation:
+        if (self._state.get_leds_animation_finished('tail')
+                and self._state.get_leds_animation_finished('front')):
             return NormalMode(self._state)
 
         return None
@@ -113,7 +121,7 @@ class NormalMode(Mode):
     """Normal mode."""
 
     def __init__(self, state):
-        self._state = state
+        super().__init__(state)
 
         LOG.info('Normal Mode')
 
@@ -155,6 +163,8 @@ class NormalMode(Mode):
             'long_click': 'poweroff',
         }
 
+        self._update_animations_state()
+
     def check_events(self):
         return None
 
@@ -163,7 +173,7 @@ class StaticMode(Mode):
     """Normal mode."""
 
     def __init__(self, state):
-        self._state = state
+        super().__init__(state)
 
         LOG.info('Static Mode')
         self.leds = {
@@ -204,6 +214,8 @@ class StaticMode(Mode):
             'long_click': 'poweroff',
         }
 
+        self._update_animations_state()
+
     def check_events(self):
         return None
 
@@ -212,7 +224,7 @@ class PoweroffMode(Mode):
     """Poweroff mode."""
 
     def __init__(self, state):
-        self._state = state
+        super().__init__(state)
 
         LOG.info('Poweroff Mode')
 
@@ -253,3 +265,5 @@ class PoweroffMode(Mode):
             'double_click': '',
             'long_click': 'startup',
         }
+
+        self._update_animations_state()

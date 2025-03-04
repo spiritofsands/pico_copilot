@@ -99,13 +99,8 @@ class ControlModule:
     def _set_animations(self):
         """Set initial animations."""
         for group in ('tail', 'front', 'status'):
-            animation = self._mode.leds[group]['animation']['name']
-            mode = self._mode.leds[group]['animation']['mode']
-
-            # TODO: why not in the module?
-            self._state.set_leds_state(group, 'animation_playing', animation)
-            self._state.set_leds_state(group, 'animation_mode', mode)
-
+            animation = self._state.get_leds_animation_playing(group)
+            mode = self._state.get_leds_animation_mode(group)
             self._modules[f'{group}_leds'].set_animation(animation, mode)
 
     def _set_brightness(self):
@@ -121,7 +116,7 @@ class ControlModule:
         for module in ['tail_leds', 'front_leds', 'status_leds']:
             self._modules[module].set_auto_brightness_modifier(brightness)
 
-    # TODO: remove
+    # TODO: use for tests or remove
     def update_config(self, state):
         """Externally change the state."""
         LOG.info('State was overwritten.')

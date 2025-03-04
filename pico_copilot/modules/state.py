@@ -19,9 +19,22 @@ class State:
         """Get leds brightness."""
         return self._state['leds'][led_type]['leds']
 
-    def get_leds_state(self, led_type):
-        """Get leds state like animation."""
-        return self._state['leds'][led_type]['state']
+    def get_leds_hardware_brightness_modifier(self, led_type):
+        """Get hardware_brightness_modifier leds state."""
+        return self._state['leds'][led_type]['state'][
+            'hardware_brightness_modifier']
+
+    def get_leds_animation_playing(self, led_type):
+        """Get animation playing leds state."""
+        return self._state['leds'][led_type]['state']['animation_playing']
+
+    def get_leds_animation_mode(self, led_type):
+        """Get animation mode leds state."""
+        return self._state['leds'][led_type]['state']['animation_mode']
+
+    def get_leds_animation_finished(self, led_type):
+        """Get animation finished leds state."""
+        return self._state['leds'][led_type]['state']['animation_finished']
 
     def set_led_brightness(self, led_type, led_name, brightness):
         """Set led brightness."""
@@ -31,13 +44,20 @@ class State:
 
     def set_all_leds_brightness(self, led_type, brightness):
         """Set all leds brightness."""
-        for led_name, value in self._state['leds'][led_type]['leds'].items():
+        for value in self._state['leds'][led_type]['leds'].values():
             value['brightness'] = brightness
 
-    # TODO: refactor to more precise functions
-    def set_leds_state(self, led_type, param, value):
-        """Set leds state like animation."""
-        self._state['leds'][led_type]['state'][param] = value
+    def set_leds_animation_finished(self, led_type, value):
+        """Set animation finished leds state."""
+        self._state['leds'][led_type]['state']['animation_finished'] = value
+
+    def set_leds_animation_playing(self, led_type, value):
+        """Set a playing animation name leds state."""
+        self._state['leds'][led_type]['state']['animation_playing'] = value
+
+    def set_leds_animation_mode(self, led_type, value):
+        """Set a playing animation mode leds state."""
+        self._state['leds'][led_type]['state']['animation_mode'] = value
 
     def get_sensor(self, sensor_name):
         """Get sensor value."""

@@ -94,7 +94,7 @@ class Emulator:
     def set_led_brightness(self, name, brightness):
         """Set led brightness based on its name."""
         known_name = False
-        # FIXME: simplify
+        # TODO: simplify
         for led_group in ('tail', 'front', 'status'):
             if name in self._colors[led_group]['leds']:
                 known_name = True
