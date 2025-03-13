@@ -109,8 +109,8 @@ class LedManager:
                 self._set_led_brightness(leds)
             else:
                 if self._animation_mode == 'repeat':
-                    LOG.debug('Repeating animation '
-                              f'"{self._current_animation}"')
+                    # LOG.debug('Repeating animation '
+                    #           f'"{self._current_animation}"')
                     self._animation.reset()
                     self._state.set_leds_animation_finished(self._name, False)
 
