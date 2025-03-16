@@ -9,7 +9,7 @@ class PicoLogger:
     def __init__(self, name):
         self.name = name
 
-        self._max_file_size = 1024 * 4  # 4 kb
+        self._max_file_size = 1024 * 50  # 50 kb
         self._file_size = self._get_file_size()
 
         # TBD: buffering
