@@ -13,6 +13,7 @@ sys.path.insert(0, PACKAGE_DIR)
 from emulator import Emulator
 from pico_copilot.modules.control import ControlModule
 from pico_copilot.modules.board_interface import BoardInterface
+from pico_copilot.utils.failsafe_loop import failsafe_loop
 
 BOARD_CONFIG = {
     'leds': {
@@ -150,13 +151,16 @@ def modify_state(original_state, animated=False, single_click=False):
 
 EMULATOR = Emulator()
 BOARD = BoardInterface(EMULATOR, BOARD_CONFIG)
-STATE = generate_default_state()
-CONTROL_MODULE = ControlModule(BOARD, STATE)
 
 
-def start_control_module():
-    """Run the control module main loop."""
-    asyncio.run(CONTROL_MODULE.start())
+async def control_module_clear_start():
+    state = generate_default_state()
+    control_module = ControlModule(BOARD, state)
+    await control_module.start()
+
+
+def control_module():
+    failsafe_loop(control_module_clear_start)
 
 
 def update_control_module_state():
@@ -171,7 +175,7 @@ def update_control_module_state():
 def main():
     """Copilot entrance point."""
 
-    control_module_thread = Thread(target=start_control_module, daemon=True)
+    control_module_thread = Thread(target=control_module, daemon=True)
     control_module_thread.start()
 
     state_update_thread = Thread(target=update_control_module_state,

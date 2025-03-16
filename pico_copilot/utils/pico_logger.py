@@ -39,6 +39,13 @@ class PicoLogger:
                   encoding='utf-8') as file:
             self._write(file, f'WARNING: {text}\n')
 
+    def error(self, text):
+        print(f'ERROR: {text}')
+        with open(self.FILENAME,
+                  self._get_file_mode(),
+                  encoding='utf-8') as file:
+            self._write(file, f'ERROR: {text}\n')
+
     def _get_file_size(self):
         try:
             return getsize(self.FILENAME)

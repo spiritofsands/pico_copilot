@@ -78,7 +78,7 @@ class ControlModule:
             self._handle_button_events()
             self._update_mode()
 
-            # TODO: needed?
+            # exceptions from tasks could be raised here
             await asyncio.gather(*tasks)
 
     def _toggle_modules(self):
