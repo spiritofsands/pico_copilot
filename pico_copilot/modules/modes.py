@@ -85,8 +85,8 @@ class StartupMode(Mode):
             },
             'status': {
                 'animation': {
-                    'name': 'startup',
-                    'mode': 'once',
+                    'name': 'heartbeat',
+                    'mode': 'repeat',
                 },
                 'brightness': None,
             },
@@ -142,7 +142,7 @@ class NormalMode(Mode):
             },
             'status': {
                 'animation': {
-                    'name': 'normal',
+                    'name': 'heartbeat_slow',
                     'mode': 'repeat',
                 },
                 'brightness': None,
