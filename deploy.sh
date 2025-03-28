@@ -21,7 +21,7 @@ deploy() {
 }
 
 run() {
-    rshell --quiet repl pyboard "exec(open(\'main_off.py\').read())"
+    rshell --quiet repl pyboard "exec(open(\'main.py\').read())"
 }
 
 ls_board() {

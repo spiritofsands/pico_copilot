@@ -49,7 +49,8 @@ class PicoLogger:
     def _get_file_size(self):
         try:
             statinfo = stat(self.FILENAME)
-            return statinfo.st_size
+            file_size = statinfo[6]
+            return file_size
         except OSError:
             return 0
 
