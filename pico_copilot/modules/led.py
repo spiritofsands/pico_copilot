@@ -56,7 +56,6 @@ class LedManager:
     def _set_led_brightness(self, leds):
         """Update leds params."""
         for name, params in leds.items():
-            # LOG.debug(f'Changing {name} led brightness to {params}')
             brightness = self._adjust_brightness(params['brightness'])
             current_brightness = self._state.get_leds_brightness(
                 self._name)[name]['brightness']
@@ -69,9 +68,13 @@ class LedManager:
 
     def _adjust_brightness(self, brightness):
         """Adjust brightness taking the auto brightness into account."""
-        assert 0.0 <= brightness <= 1.0
+        if not (0.0 <= brightness <= 1.0):
+            LOG.error(f'Brightness value is out of bounds: {brightness}')
+            return
+
         brightness_value = (brightness * self._auto_brightness_modifier *
                             self._hardware_brightness_modifier)
+
         return brightness_value
 
     def set_animation(self, animation_name, animation_mode):

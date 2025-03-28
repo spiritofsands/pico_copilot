@@ -1,6 +1,6 @@
 """Custom logger module for raspberry pico."""
 
-from os.path import getsize
+from os import stat
 
 
 class PicoLogger:
@@ -48,7 +48,8 @@ class PicoLogger:
 
     def _get_file_size(self):
         try:
-            return getsize(self.FILENAME)
+            statinfo = stat(self.FILENAME)
+            return statinfo.st_size
         except OSError:
             return 0
 

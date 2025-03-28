@@ -65,7 +65,7 @@ class ControlModule:
         """Start the control module routine."""
         LOG.info('Control module started')
 
-        tasks = [None] * len(self._modules.values())
+        tasks = [None] * len(self._modules)
         while True:
             self._update_auto_brightness_modifier()
 

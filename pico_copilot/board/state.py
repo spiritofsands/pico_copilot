@@ -21,7 +21,7 @@ STATE = {
         },
         'front': {
             'state': {
-                'hardware_brightness_modifier': 0.8,
+                'hardware_brightness_modifier': 0.7,
                 'animation_playing': 'startup',
                 'animation_mode': 'repeat',
                 'animation_finished': False,
@@ -35,7 +35,7 @@ STATE = {
         },
         'status': {
             'state': {
-                'hardware_brightness_modifier': 0.7,
+                'hardware_brightness_modifier': 1.0,
                 'animation_playing': 'heartbeat',
                 'animation_mode': 'repeat',
                 'animation_finished': False,

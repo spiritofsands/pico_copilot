@@ -8,7 +8,7 @@ from machine import Pin, PWM
 
 class Board:
     """Board hardware class."""
-    DEFAULT_PWM_FREQ = 10000
+    DEFAULT_PWM_FREQ = 1000
 
     def __init__(self, config):
         """Board initialization."""
@@ -20,12 +20,14 @@ class Board:
             for led_name, led_config in led_group_data['leds'].items():
                 if led_config['pin'] == 'LED':
                     self._leds[led_group][led_name] = Pin(
-                        led_config['pin'], Pin.OUT)
+                        led_config['pin'],
+                        Pin.OUT)
                 else:
                     # LOG.debug(f'Setting led {led_group} {led_name}')
                     # LOG.debug(f"led_config {led_config}")
                     self._leds[led_group][led_name] = PWM(
-                        Pin(led_config['pin'], Pin.OUT))
+                        Pin(led_config['pin'],
+                            Pin.OUT))
                     self._leds[led_group][led_name].freq(self.DEFAULT_PWM_FREQ)
 
         self._light_sensor = LightSensor(self._config)
@@ -38,7 +40,7 @@ class Board:
         # self.onboard_led = Pin("LED", Pin.OUT)
 
     def set_led_brightness(self, name, brightness):
-        LOG.debug(f'HW set led brightness of {name} to {brightness}')
+        # LOG.debug(f'HW set led brightness of {name} to {brightness}')
 
         known_name = False
         for led_group_name, led_group_data in self._leds.items():
@@ -46,8 +48,7 @@ class Board:
                 known_name = True
                 # LOG.debug(f'turning "{name}" on: ')
                 # LOG.debug(f'{led_group_data}')
-                led_group_data[name].duty_u16(
-                    self._get_duty(brightness))
+                led_group_data[name].duty_u16(self._get_duty(brightness))
         if not known_name:
             LOG.warning('Unknown led name')
 
@@ -64,8 +65,8 @@ class Board:
 
     def get_button_state(self):
         pressed = self._button1.value() == 0
-        if pressed:
-            LOG.debug('HW Button was pressed')
+        # if pressed:
+        #     LOG.debug('HW Button was pressed')
         return pressed
 
     def _get_duty(self, brightness):
